@@ -1,1 +1,1 @@
-# MachineLearningExcercise_Coursera
+# MachineLearningExercises_Coursera
