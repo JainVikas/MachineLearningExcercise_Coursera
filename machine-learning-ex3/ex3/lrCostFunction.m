@@ -38,10 +38,15 @@ grad = zeros(size(theta));
 
 
 h = sigmoid(X*theta)
-
+J = (1/m)*((-y'*log(h)) - ((1-y)'*log(1-h)));
 grad = (1/m)*X'*(h-y);
 temp = theta
 temp(1) = 0
+
+thetasquare = temp'*temp;
+scaling = (lambda/(2*m))*thetasquare;
+
+J= J + scaling;
 
 grad= grad + (lambda/m)*temp
 
