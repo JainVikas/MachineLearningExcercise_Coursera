@@ -16,6 +16,7 @@ function [J grad] = nnCostFunction(nn_params, ...
 
 % Reshape nn_params back into the parameters Theta1 and Theta2, the weight matrices
 % for our 2 layer neural network
+
 Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
                  hidden_layer_size, (input_layer_size + 1));
 
@@ -29,7 +30,8 @@ m = size(X, 1);
 J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
-
+eye_matrix = eye(num_labels);
+y_matrix = eye_matrix(y,:);
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
@@ -38,7 +40,20 @@ Theta2_grad = zeros(size(Theta2));
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
-%
+a1 = [ones(m, 1) X];
+z2 = a1*Theta1';
+a2 = sigmoid(z2);
+z = size(a2, 1);
+a2 = [ones(z, 1) a2];
+z3= a2*Theta2';
+a3 = sigmoid(z3);
+
+p=(sum(sum(Theta1(:,2:end).^2)) + sum(sum(Theta2(:,2:end).^2)));
+J = sum(sum((1/m)*((-y_matrix.*log(a3)) - ((1-y_matrix).*log(1-a3)))));
+J_reg = (lambda/(2*m))*p;
+
+J= J+ J_reg;
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -53,7 +68,16 @@ Theta2_grad = zeros(size(Theta2));
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
-%
+d3= a3-y_matrix;
+d2= (d3*Theta2).*sigmoidGradient([ones(size(z2,1), 1) z2]);
+d2 = d2(:,2:end);
+delta_1 = d2'*a1;
+delta_2 = d3'*a2;
+
+Theta1_grad = delta_1/m;
+Theta2_grad = delta_2/m;
+size(Theta1_grad)
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
@@ -61,27 +85,14 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+Theta1_reg = (lambda*   [zeros(size(Theta1, 1), 1) Theta1(:, 2:end)])/m;
+Theta2_reg = (lambda*[zeros(size(Theta2, 1), 1) Theta2(:, 2:end)])/m;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Theta1_grad = Theta1_grad + Theta1_reg;
+Theta2_grad = Theta2_grad + Theta2_reg;
 
 % -------------------------------------------------------------
-
+ 
 % =========================================================================
 
 % Unroll gradients
