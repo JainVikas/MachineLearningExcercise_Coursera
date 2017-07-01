@@ -38,7 +38,6 @@ grad = zeros(size(theta));
 
 h= sigmoid(X*theta);
 
-<<<<<<< HEAD
 J = (1/m)*((-y'*log(h)) - ((1-y)'*log(1-h)));
 
 grad_ur = (1/m)*X'*(h-y);
@@ -46,7 +45,6 @@ grad_ur = (1/m)*X'*(h-y);
 theta(1)=0;
 thetasquare = theta'*theta;
 scaling = (lambda/(2*m))*thetasquare;
-=======
 h = sigmoid(X*theta)
 J = (1/m)*((-y'*log(h)) - ((1-y)'*log(1-h)));
 grad = (1/m)*X'*(h-y);
